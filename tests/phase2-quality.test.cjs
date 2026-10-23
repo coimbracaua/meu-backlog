@@ -30,8 +30,8 @@ test('HTML candidato referencia os ficheiros de Fase 2 presentes no repositório
   assert.match(appHtml, /src="js\/app-phase2\.js"/);
   assert.match(loginHtml, /href="css\/auth-phase2\.css"/);
   assert.match(loginHtml, /src="js\/auth-phase2\.js"/);
-  assert.match(loginHtml, /app-phase2\.html/);
-  assert.match(appHtml, /index-phase2\.html/);
+  assert.match(authJs, /app-phase2\.html/);
+  assert.match(dataJs, /index-phase2\.html/);
 });
 
 test('todos os ficheiros JavaScript têm sintaxe válida', () => {
