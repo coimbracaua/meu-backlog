@@ -600,70 +600,55 @@
   // Operações universais na tabela 'jogos'
   const db = {
     async selectAll() {
-      if (supabaseSdk) {
-        const { data, error } = await supabaseSdk
-          .from(SUPABASE_CONFIG.table)
-          .select('*')
-          .eq('user_id', currentUser.id)
-          .order('id', { ascending: false });
-        if (error) throw error;
-        return data;
+      if (!supabaseSdk) {
+        throw new Error('Biblioteca oficial do Supabase indisponível. Recarregue a página para tentar novamente.');
       }
-
-      throw new Error('Biblioteca oficial do Supabase indisponível. Recarregue a página para tentar novamente.');
-    },
-
-    async insert(game)      return await res.json();
+      const { data, error } = await supabaseSdk
+        .from(SUPABASE_CONFIG.table)
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('id', { ascending: false });
+      if (error) throw error;
+      return data;
     },
 
     async insert(game) {
-      if (supabaseSdk) {
-        const { data, error } = await supabaseSdk
-          .from(SUPABASE_CONFIG.table)
-          .insert([game])
-          .select();
-        if (error) throw error;
-        return data;
+      if (!supabaseSdk) {
+        throw new Error('Biblioteca oficial do Supabase indisponível. Não é possível salvar com segurança.');
       }
-
-      throw new Error('Biblioteca oficial do Supabase indisponível. Não é possível salvar com segurança.');
-    },
-
-    async update(id, game)      return await res.json();
+      const { data, error } = await supabaseSdk
+        .from(SUPABASE_CONFIG.table)
+        .insert([game])
+        .select();
+      if (error) throw error;
+      return data;
     },
 
     async update(id, game) {
-      if (supabaseSdk) {
-        const { data, error } = await supabaseSdk
-          .from(SUPABASE_CONFIG.table)
-          .update(game)
-          .eq('id', id)
-          .eq('user_id', currentUser.id)
-          .select();
-        if (error) throw error;
-        return data;
+      if (!supabaseSdk) {
+        throw new Error('Biblioteca oficial do Supabase indisponível. Não é possível atualizar com segurança.');
       }
-
-      throw new Error('Biblioteca oficial do Supabase indisponível. Não é possível atualizar com segurança.');
-    },
-
-    async delete(id)      return await res.json();
+      const { data, error } = await supabaseSdk
+        .from(SUPABASE_CONFIG.table)
+        .update(game)
+        .eq('id', id)
+        .eq('user_id', currentUser.id)
+        .select();
+      if (error) throw error;
+      return data;
     },
 
     async delete(id) {
-      if (supabaseSdk) {
-        const { error } = await supabaseSdk
-          .from(SUPABASE_CONFIG.table)
-          .delete()
-          .eq('id', id)
-          .eq('user_id', currentUser.id);
-        if (error) throw error;
-        return true;
+      if (!supabaseSdk) {
+        throw new Error('Biblioteca oficial do Supabase indisponível. Não é possível excluir com segurança.');
       }
-
-      throw new Error('Biblioteca oficial do Supabase indisponível. Não é possível excluir com segurança.');
-    }
-  };      return true;
+      const { error } = await supabaseSdk
+        .from(SUPABASE_CONFIG.table)
+        .delete()
+        .eq('id', id)
+        .eq('user_id', currentUser.id);
+      if (error) throw error;
+      return true;
     }
   };
 
