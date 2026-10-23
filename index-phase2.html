@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player One | Login — Fase 2 — Qualidade Técnica</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/auth-phase2.css">
+</head>
+<body>
+<!-- CANDIDATO FASE 2: não substitui index.html nem index-audit.html. -->
+<!-- CÓPIA DE TESTE: Fase 2 — Qualidade Técnica. O ficheiro index.html original não foi alterado. -->
+
+    <div class="auth-container">
+        <!-- Cabeçalho -->
+        <div class="auth-header">
+            <h1>Player One</h1>
+            <p>Sua central de gerenciamento de jogos</p>
+        </div>
+
+        <!-- Formulário de Login -->
+        <form id="login-form" class="auth-form active">
+            <h2>Entrar</h2>
+            <div class="input-group">
+                <label for="login-email">E-mail</label>
+                <input type="email" id="login-email" required placeholder="jogadora@email.com">
+            </div>
+            <div class="input-group">
+                <label for="login-password">Senha</label>
+                <input type="password" id="login-password" required placeholder="Sua senha secreta">
+            </div>
+            <button type="submit" class="btn-primary">Iniciar Sessão</button>
+            <p class="toggle-text">Não tem uma conta? <span onclick="toggleAuthMode()">Crie uma aqui</span></p>
+        </form>
+
+        <!-- Formulário de Cadastro -->
+        <form id="register-form" class="auth-form">
+            <h2>Nova Conta</h2>
+            <!-- NOVO CAMPO: NOME DE USUÁRIO -->
+            <div class="input-group">
+                <label for="register-username">Nome de Usuário</label>
+                <input type="text" id="register-username" required placeholder="Seu nick gamer (ex: caua_player1)">
+            </div>
+            <div class="input-group">
+                <label for="register-email">E-mail</label>
+                <input type="email" id="register-email" required placeholder="jogadora@email.com">
+            </div>
+            <div class="input-group">
+                <label for="register-password">Senha</label>
+                <input type="password" id="register-password" required placeholder="Mínimo de 6 caracteres">
+            </div>
+            <button type="submit" class="btn-primary">Criar Conta</button>
+            <p class="toggle-text">Já tem uma conta? <span onclick="toggleAuthMode()">Entre aqui</span></p>
+        </form>
+
+        <div id="auth-message" class="message hidden"></div>
+    </div>
+
+    <!-- Script do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth-phase2.js"></script>
+</body>
+</html>
