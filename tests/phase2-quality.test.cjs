@@ -103,5 +103,5 @@ test('auth e interface usam nomes de ficheiros versionados para os redirecioname
   assert.match(authJs, /app-phase2\.html/);
   assert.match(dataJs, /index-phase2\.html/);
   assert.doesNotMatch(authJs, /window\.location\.href\s*=\s*['"]app\.html/);
-  assert.doesNotMatch(appJs, /window\.location\.href\s*=\s*['"]index\.html/);
+  assert.doesNotMatch(dataJs, /window\.location\.href\s*=\s*['"]index\.html/);
 });
