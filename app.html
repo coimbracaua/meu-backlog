@@ -567,7 +567,7 @@
       console.warn("Aviso ao inicializar supabase-js SDK, usando REST nativo:", e);
     }
     supabaseSdk = null;
-    connectionInfo.mode = 'REST API Direta (Fetch Nativo)';
+    connectionInfo.mode = 'SDK indisponível';
   }
 
   // NOVO: Verifica se o usuário está logado
@@ -604,22 +604,16 @@
         const { data, error } = await supabaseSdk
           .from(SUPABASE_CONFIG.table)
           .select('*')
+          .eq('user_id', currentUser.id)
           .order('id', { ascending: false });
         if (error) throw error;
         return data;
       }
 
-      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}?select=*&order=id.desc`, {
-        headers: {
-          'apikey': SUPABASE_CONFIG.key,
-          'Authorization': `Bearer ${SUPABASE_CONFIG.key}`
-        }
-      });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`HTTP ${res.status}: ${errText || res.statusText}`);
-      }
-      return await res.json();
+      throw new Error('Biblioteca oficial do Supabase indisponível. Recarregue a página para tentar novamente.');
+    },
+
+    async insert(game)      return await res.json();
     },
 
     async insert(game) {
@@ -632,21 +626,10 @@
         return data;
       }
 
-      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}`, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_CONFIG.key,
-          'Authorization': `Bearer ${SUPABASE_CONFIG.key}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=representation'
-        },
-        body: JSON.stringify(game)
-      });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`HTTP ${res.status}: ${errText || res.statusText}`);
-      }
-      return await res.json();
+      throw new Error('Biblioteca oficial do Supabase indisponível. Não é possível salvar com segurança.');
+    },
+
+    async update(id, game)      return await res.json();
     },
 
     async update(id, game) {
@@ -655,26 +638,16 @@
           .from(SUPABASE_CONFIG.table)
           .update(game)
           .eq('id', id)
+          .eq('user_id', currentUser.id)
           .select();
         if (error) throw error;
         return data;
       }
 
-      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_CONFIG.key,
-          'Authorization': `Bearer ${SUPABASE_CONFIG.key}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=representation'
-        },
-        body: JSON.stringify(game)
-      });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`HTTP ${res.status}: ${errText || res.statusText}`);
-      }
-      return await res.json();
+      throw new Error('Biblioteca oficial do Supabase indisponível. Não é possível atualizar com segurança.');
+    },
+
+    async delete(id)      return await res.json();
     },
 
     async delete(id) {
@@ -682,23 +655,15 @@
         const { error } = await supabaseSdk
           .from(SUPABASE_CONFIG.table)
           .delete()
-          .eq('id', id);
+          .eq('id', id)
+          .eq('user_id', currentUser.id);
         if (error) throw error;
         return true;
       }
 
-      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}?id=eq.${id}`, {
-        method: 'DELETE',
-        headers: {
-          'apikey': SUPABASE_CONFIG.key,
-          'Authorization': `Bearer ${SUPABASE_CONFIG.key}`
-        }
-      });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`HTTP ${res.status}: ${errText || res.statusText}`);
-      }
-      return true;
+      throw new Error('Biblioteca oficial do Supabase indisponível. Não é possível excluir com segurança.');
+    }
+  };      return true;
     }
   };
 
@@ -779,11 +744,12 @@
         <tr>
           <td colspan="8" style="text-align:center; padding:30px; color:#f87171;">
             ⚠️ <b>Não foi possível carregar os jogos do Supabase.</b><br>
-            <span style="font-size:12px; color:var(--text-muted);">${err.message}</span><br><br>
+            <span id="load-error-message" style="font-size:12px; color:var(--text-muted);"></span><br><br>
             <button class="btn btn-outline" onclick="carregarDoBanco(true)">Tentar Novamente</button>
           </td>
         </tr>
       `;
+      document.getElementById('load-error-message').textContent = String(err.message || 'Erro desconhecido');
     }
   }
 
@@ -922,7 +888,7 @@
 <b>Último Sync:</b> ${connectionInfo.lastSync ? connectionInfo.lastSync.toLocaleTimeString() : 'N/D'}
 <b>Status SDK:</b> ${window.supabase ? 'Carregado com sucesso' : 'Indisponível (usando REST Fetch nativo)'}
 <b>ID Logado:</b> ${currentUser ? currentUser.id : 'Nenhum'}
-<b>Último Erro:</b> ${connectionInfo.error || 'Nenhum erro registrado'}
+<b>Último Erro:</b> ${escapeHtml(connectionInfo.error || 'Nenhum erro registrado')}
     `.trim();
   }
 
