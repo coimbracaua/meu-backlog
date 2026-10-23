@@ -83,7 +83,7 @@ test('utilitários de data e estado preservam resultados esperados', () => {
   vm.runInContext(dataJs, sandbox, { filename: 'js/supabase-phase2.js' });
   vm.runInContext(appJs, sandbox, { filename: 'js/app-phase2.js' });
 
-  const result = vm.runInContext("({ localDate: getLocalDateString(), formattedDate: formatDate('2024-02-09'), formattedTimestamp: formatDate('2024-12-31T23:00:00Z'), completedClass: getClassStatus('Zerado'), escaped: escapeHtml('<script>&\\\"\\'') })", sandbox);
+  const result = vm.runInContext("({ localDate: getLocalDateString(), formattedDate: formatDate('2024-02-09'), formattedTimestamp: formatDate('2024-12-31T23:00:00Z'), completedClass: getClassStatus('Zerado'), escaped: escapeHtml('<script>&' + String.fromCharCode(34, 39)) })", sandbox);
 
   const now = new Date();
   const expectedLocalDate = [
