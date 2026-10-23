@@ -50,7 +50,7 @@ function toggleAuthMode() {
                 const { data, error } = await supabaseClient.auth.getSession();
                 if (error) throw error;
                 if (data && data.session) {
-                    window.location.href = 'app-audit.html';
+                    window.location.href = 'app-phase2.html';
                 }
             } catch (error) {
                 console.error('Falha ao verificar sessão:', error);
@@ -142,7 +142,7 @@ function toggleAuthMode() {
             } else {
                 showMessage('Login efetuado! Carregando seu backlog...', 'success');
                 setTimeout(() => {
-                    window.location.href = 'app-audit.html';
+                    window.location.href = 'app-phase2.html';
                 }, 1000);
             }
         });
