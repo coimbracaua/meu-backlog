@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player One | Login — Auditoria Fase 1</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Dark Gamer Theme Colors */
+            --bg-base: #0b0d14;
+            --bg-panel: #131722;
+            --bg-card: #1c2132;
+            --bg-card-hover: #242a3f;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #2d3748;
+            --border-focus: #a855f7;
+            
+            /* Accents (Neon/Gamer vibes) */
+            --accent: #a855f7;
+            --accent-hover: #9333ea;
+            --accent-glow: rgba(168, 85, 247, 0.5);
+            --secondary: #ec4899;
+            --secondary-glow: rgba(236, 72, 153, 0.4);
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            background-image: 
+                radial-gradient(circle at 15% 30%, rgba(168, 85, 247, 0.08), transparent 30%),
+                radial-gradient(circle at 85% 70%, rgba(236, 72, 153, 0.08), transparent 30%);
+        }
+
+        .auth-container {
+            background-color: var(--bg-card);
+            padding: 45px 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 15px rgba(168, 85, 247, 0.1);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-header h1 {
+            margin: 0 0 5px 0;
+            color: #d8b4fe; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: pulseGlow 3s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 2px rgba(168, 85, 247, 0.4); color: #d8b4fe; }
+            100% { text-shadow: 0 0 10px var(--accent), 0 0 15px var(--accent-glow); color: #ffffff; }
+        }
+
+        .auth-header p {
+            font-size: 0.95em;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-form {
+            display: none;
+            text-align: left;
+            animation: formSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        @keyframes formSlideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-form h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-panel);
+            color: var(--text-main);
+            box-sizing: border-box;
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input::placeholder {
+            color: #475569;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            background-color: var(--bg-base);
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2), inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: #ffffff;
+            font-weight: 600;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 15px;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+            box-shadow: 0 6px 25px var(--accent-glow);
+            transform: translateY(-2px);
+            border-color: #d8b4fe;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+
+        .toggle-text {
+            margin-top: 25px;
+            font-size: 0.95em;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .toggle-text span {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-text span:hover {
+            color: var(--secondary);
+            text-shadow: 0 0 8px var(--secondary-glow);
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 500;
+            text-align: center;
+            animation: formSlideUp 0.3s ease forwards;
+        }
+
+        .message.hidden {
+            display: none;
+        }
+
+        .message.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
+        }
+
+        .message.success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        }
+    </style>
+</head>
+<body>
+<!-- CÓPIA DE TESTE: Auditoria Fase 1. O ficheiro index.html original não foi alterado. -->
+
+    <div class="auth-container">
+        <!-- Cabeçalho -->
+        <div class="auth-header">
+            <h1>Player One</h1>
+            <p>Sua central de gerenciamento de jogos</p>
+        </div>
+
+        <!-- Formulário de Login -->
+        <form id="login-form" class="auth-form active">
+            <h2>Entrar</h2>
+            <div class="input-group">
+                <label for="login-email">E-mail</label>
+                <input type="email" id="login-email" required placeholder="jogadora@email.com">
+            </div>
+            <div class="input-group">
+                <label for="login-password">Senha</label>
+                <input type="password" id="login-password" required placeholder="Sua senha secreta">
+            </div>
+            <button type="submit" class="btn-primary">Iniciar Sessão</button>
+            <p class="toggle-text">Não tem uma conta? <span onclick="toggleAuthMode()">Crie uma aqui</span></p>
+        </form>
+
+        <!-- Formulário de Cadastro -->
+        <form id="register-form" class="auth-form">
+            <h2>Nova Conta</h2>
+            <!-- NOVO CAMPO: NOME DE USUÁRIO -->
+            <div class="input-group">
+                <label for="register-username">Nome de Usuário</label>
+                <input type="text" id="register-username" required placeholder="Seu nick gamer (ex: caua_player1)">
+            </div>
+            <div class="input-group">
+                <label for="register-email">E-mail</label>
+                <input type="email" id="register-email" required placeholder="jogadora@email.com">
+            </div>
+            <div class="input-group">
+                <label for="register-password">Senha</label>
+                <input type="password" id="register-password" required placeholder="Mínimo de 6 caracteres">
+            </div>
+            <button type="submit" class="btn-primary">Criar Conta</button>
+            <p class="toggle-text">Já tem uma conta? <span onclick="toggleAuthMode()">Entre aqui</span></p>
+        </form>
+
+        <div id="auth-message" class="message hidden"></div>
+    </div>
+
+    <!-- Script do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        function toggleAuthMode() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const messageDiv = document.getElementById('auth-message');
+
+            messageDiv.className = 'message hidden';
+            messageDiv.innerText = '';
+
+            if (loginForm.classList.contains('active')) {
+                loginForm.classList.remove('active');
+                registerForm.classList.add('active');
+            } else {
+                registerForm.classList.remove('active');
+                loginForm.classList.add('active');
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('auth-message');
+            messageDiv.innerText = text;
+            messageDiv.className = `message ${type}`;
+        }
+
+        // ATENÇÃO CAUÃ: As chaves devem estar sempre entre aspas simples ('')
+        const supabaseUrl = 'https://vvgdvigeqgbsozncunyu.supabase.co';
+        const supabaseKey = 'sb_publishable_ypPbYVlKrkSUoUU1g693ew_Tx2vUbzE';
+        
+        // Inicializa o cliente do Supabase diretamente, sem o 'if'
+        let supabaseClient = null;
+        if (window.supabase && typeof window.supabase.createClient === 'function') {
+            try {
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
+                    auth: {
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: true
+                    }
+                });
+            } catch (error) {
+                console.error('Falha ao inicializar o SDK do Supabase:', error);
+                showMessage('Não foi possível inicializar o serviço de autenticação.', 'error');
+            }
+        } else {
+            showMessage('O SDK do Supabase não foi carregado. Verifique a ligação e recarregue a página.', 'error');
+        }
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!supabaseClient) return;
+            try {
+                const { data, error } = await supabaseClient.auth.getSession();
+                if (error) throw error;
+                if (data && data.session) {
+                    window.location.href = 'app-audit.html';
+                }
+            } catch (error) {
+                console.error('Falha ao verificar sessão:', error);
+                showMessage('Não foi possível validar a sessão. Tente novamente.', 'error');
+            }
+        });
+
+        // CADASTRO (Agora enviando o username)
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if(!supabaseClient) {
+                showMessage("Configure as chaves do Supabase no código para testar.", "error");
+                return;
+            }
+
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "Carregando...";
+            btn.disabled = true;
+
+            // MÁGICA ACONTECE AQUI: Passamos o username dentro de "options.data"
+            let signupResult;
+            try {
+                signupResult = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            username: username
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Falha de rede durante o cadastro:', error);
+                showMessage('Não foi possível contactar o serviço de autenticação. Tente novamente.', 'error');
+                return;
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+            const { data, error } = signupResult;
+
+            if (error) {
+                showMessage(error.message, 'error');
+            } else {
+                showMessage('Conta e perfil criados com sucesso! Faça login.', 'success');
+                document.getElementById('register-form').reset();
+                setTimeout(toggleAuthMode, 2500);
+            }
+        });
+
+        // LOGIN
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if(!supabaseClient) {
+                showMessage("Configure as chaves do Supabase no código para testar.", "error");
+                return;
+            }
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "Entrando...";
+            btn.disabled = true;
+
+            let loginResult;
+            try {
+                loginResult = await supabaseClient.auth.signInWithPassword({ email, password });
+            } catch (error) {
+                console.error('Falha de rede durante o login:', error);
+                showMessage('Não foi possível contactar o serviço de autenticação. Tente novamente.', 'error');
+                return;
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+            const { data, error } = loginResult;
+
+            if (error) {
+                showMessage('Erro ao entrar: Verifique e-mail e senha.', 'error');
+            } else {
+                showMessage('Login efetuado! Carregando seu backlog...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'app-audit.html';
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
