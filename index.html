@@ -127,6 +127,11 @@
     }
     .btn-outline:hover:not(:disabled) { background-color: var(--bg-card-hover); border-color: var(--text-muted); }
 
+    .btn-danger-outline {
+      background-color: transparent; border: 1px solid rgba(239, 68, 68, 0.5); color: #f87171;
+    }
+    .btn-danger-outline:hover:not(:disabled) { background-color: rgba(239, 68, 68, 0.1); border-color: var(--danger); color: var(--danger); }
+
     /* KPIs */
     .kpi-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -338,6 +343,8 @@
       </span>
       <button class="btn btn-outline" onclick="carregarDoBanco(true)" title="Recarregar biblioteca da nuvem">🔄 Atualizar</button>
       <button class="btn btn-primary" onclick="abrirModal()">➕ Adicionar Jogo</button>
+      <!-- NOVO: Botão de Sair -->
+      <button class="btn btn-danger-outline" onclick="fazerLogout()" title="Sair da conta">🚪 Sair</button>
     </div>
   </header>
 
@@ -527,7 +534,7 @@
 
 <script>
   /**
-   * CONFIGURAÇÕES SUPABASE
+   * CONFIGURAÇÕES SUPABASE E USUÁRIO LOGADO
    */
   const SUPABASE_CONFIG = {
     url: 'https://vvgdvigeqgbsozncunyu.supabase.co',
@@ -543,13 +550,10 @@
     latency: null,
     error: null
   };
+  
+  // NOVO: Armazena os dados do usuário atualmente logado
+  let currentUser = null;
 
-  /**
-   * CLIENTE RESILIENTE SUPABASE
-   * Suporta a biblioteca window.supabase (se o CDN carregar)
-   * OU fallback transparente usando fetch() nativo direto na REST API do Supabase!
-   * Isso garante 100% de funcionamento mesmo se o CDN for bloqueado por ad-blocker ou falhar!
-   */
   let supabaseSdk = null;
 
   function initSupabaseClient() {
@@ -566,6 +570,33 @@
     connectionInfo.mode = 'REST API Direta (Fetch Nativo)';
   }
 
+  // NOVO: Verifica se o usuário está logado
+  async function verificarSessao() {
+    if (!supabaseSdk) {
+      showToast('A biblioteca do Supabase não foi carregada. Redirecionando para login...', 'error');
+      setTimeout(() => window.location.href = 'index.html', 2000);
+      return false;
+    }
+
+    const { data: { session }, error } = await supabaseSdk.auth.getSession();
+    
+    if (error || !session) {
+      window.location.href = 'index.html'; // Bloqueia e envia pro login
+      return false;
+    }
+    
+    currentUser = session.user; // Salva o ID do usuário para uso posterior
+    return true;
+  }
+
+  // NOVO: Função para deslogar
+  async function fazerLogout() {
+    if (supabaseSdk) {
+      await supabaseSdk.auth.signOut();
+    }
+    window.location.href = 'index.html';
+  }
+
   // Operações universais na tabela 'jogos'
   const db = {
     async selectAll() {
@@ -578,7 +609,6 @@
         return data;
       }
 
-      // Fallback nativo Fetch
       const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}?select=*&order=id.desc`, {
         headers: {
           'apikey': SUPABASE_CONFIG.key,
@@ -602,7 +632,6 @@
         return data;
       }
 
-      // Fallback nativo Fetch
       const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}`, {
         method: 'POST',
         headers: {
@@ -631,7 +660,6 @@
         return data;
       }
 
-      // Fallback nativo Fetch
       const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}?id=eq.${id}`, {
         method: 'PATCH',
         headers: {
@@ -659,7 +687,6 @@
         return true;
       }
 
-      // Fallback nativo Fetch
       const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}?id=eq.${id}`, {
         method: 'DELETE',
         headers: {
@@ -676,10 +703,15 @@
   };
 
   /**
-   * INICIALIZAÇÃO
+   * INICIALIZAÇÃO E PROTEÇÃO
    */
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     initSupabaseClient();
+    
+    // NOVO: Verifica se o usuário tem permissão de estar aqui antes de carregar o banco
+    const logado = await verificarSessao();
+    if (!logado) return; // Interrompe o carregamento se não houver usuário logado
+
     carregarDoBanco();
 
     // Atalhos de teclado
@@ -788,16 +820,16 @@
       nota: parseFloat(document.getElementById('form-nota').value) || 0,
       horas_jogadas: parseFloat(document.getElementById('form-horas').value) || 0,
       data_inicio: dataInicioVal ? dataInicioVal : null,
-      obs: document.getElementById('form-obs').value.trim()
+      obs: document.getElementById('form-obs').value.trim(),
+      // NOVO: Adiciona obrigatoriamente a assinatura do dono do jogo para a regra RLS
+      user_id: currentUser.id
     };
 
     try {
       if (id) {
-        // Atualização
         await db.update(id, dbObj);
         showToast(`"${titulo}" atualizado com sucesso!`, 'success');
       } else {
-        // Novo Jogo
         await db.insert(dbObj);
         showToast(`"${titulo}" adicionado à sua biblioteca!`, 'success');
       }
@@ -889,6 +921,7 @@
 <b>Latência:</b> ${connectionInfo.latency !== null ? connectionInfo.latency + ' ms' : 'N/D'}
 <b>Último Sync:</b> ${connectionInfo.lastSync ? connectionInfo.lastSync.toLocaleTimeString() : 'N/D'}
 <b>Status SDK:</b> ${window.supabase ? 'Carregado com sucesso' : 'Indisponível (usando REST Fetch nativo)'}
+<b>ID Logado:</b> ${currentUser ? currentUser.id : 'Nenhum'}
 <b>Último Erro:</b> ${connectionInfo.error || 'Nenhum erro registrado'}
     `.trim();
   }
