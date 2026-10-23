@@ -51,7 +51,7 @@
   async function verificarSessao() {
     if (!supabaseSdk) {
       showToast('O SDK do Supabase não está disponível. Verifique a conexão e tente novamente.', 'error');
-      setTimeout(() => { window.location.href = 'index-audit.html'; }, 2000);
+      setTimeout(() => { window.location.href = 'index-phase2.html'; }, 2000);
       return false;
     }
 
@@ -60,7 +60,7 @@
       if (error) throw error;
 
       if (!data || !data.session || !data.session.user) {
-        window.location.href = 'index-audit.html';
+        window.location.href = 'index-phase2.html';
         return false;
       }
 
@@ -81,7 +81,7 @@
     } catch (error) {
       console.error('Falha ao encerrar a sessão:', error);
     } finally {
-      window.location.href = 'index-audit.html';
+      window.location.href = 'index-phase2.html';
     }
   }
 
