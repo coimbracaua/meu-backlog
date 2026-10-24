@@ -38,6 +38,7 @@ assert.match(j4,/Não serão apagados nem atualizados registos existentes/);
 assert.match(j4,/não alteram automaticamente as horas no Supabase/);
 assert.match(j4,/localStorage\.setItem\(key\(type\),JSON\.stringify\(data\)\)/);
 assert.match(j4,/function renderCardButtons\(\)/);
+assert.match(j4,/observe\(cards,\{childList:true,subtree:true\}\)/);
 assert.match(j3,/id='p3-cards'/);
 assert.match(j3,/cardMode=!cardMode/);
 
