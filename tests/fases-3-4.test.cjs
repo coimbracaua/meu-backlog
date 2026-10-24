@@ -27,7 +27,7 @@ assert.match(j4,/version:1/);
 assert.match(j4,/URL\.createObjectURL/);
 assert.match(j4,/file\.accept='\.json,application\/json'/);
 assert.match(j4,/JSON\.parse\(await file\.text\(\)\)/);
-assert.match(j4,/typeof g==='object'/);
+assert.match(j4,/typeof g!=='object'/);
 assert.match(j4,/!titulo\|\|!plataforma/);
 assert.match(j4,/Math\.max\(0,Math\.min\(5,Number\(g\.nota\)\|\|0\)\)/);
 assert.match(j4,/n<1\|\|n>1440/);
