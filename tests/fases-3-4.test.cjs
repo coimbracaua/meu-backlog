@@ -56,6 +56,6 @@ const loginMarkup=read('index-phase4.html'),authScript=read('js/auth-phase4.js')
 assert.match(loginMarkup,/register-password-confirm/);
 assert.match(loginMarkup,/minlength="8"/);
 assert.match(loginMarkup,/password-strength/);
-assert.match(authScript,/password\.length < 12/);
+assert.match(authScript,/password\.length < 8/);
 assert.match(authScript,/password !== confirmation/);
 assert.match(authScript,/data-toggle-password/);
