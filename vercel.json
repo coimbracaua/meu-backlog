@@ -5,20 +5,36 @@
     {
       "src": "*.html",
       "use": "@vercel/static"
+    },
+    {
+      "src": "css/*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "js/*.js",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/",
-      "dest": "/index.html"
+      "src": "^/$",
+      "dest": "/index-phase2.html"
     },
     {
-      "src": "/login",
-      "dest": "/index.html"
+      "src": "^/login/?$",
+      "dest": "/index-phase2.html"
     },
     {
-      "src": "/app",
-      "dest": "/app.html"
+      "src": "^/index\\.html$",
+      "dest": "/index-phase2.html"
+    },
+    {
+      "src": "^/app/?$",
+      "dest": "/app-phase2.html"
+    },
+    {
+      "src": "^/app\\.html$",
+      "dest": "/app-phase2.html"
     },
     {
       "src": "/(.*)",

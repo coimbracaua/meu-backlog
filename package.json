@@ -1,0 +1,14 @@
+{
+  "name": "meu-backlog-phase2-audit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Checks automatizados sem dependências de terceiros para a cópia de auditoria Fase 2.",
+  "scripts": {
+    "check": "node --check js/supabase-phase2.js && node --check js/app-phase2.js && node --check js/auth-phase2.js",
+    "test": "node --test tests/*.test.cjs",
+    "validate": "npm run check && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
