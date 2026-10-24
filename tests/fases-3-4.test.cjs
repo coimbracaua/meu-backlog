@@ -43,3 +43,10 @@ assert.match(j3,/id='p3-cards'/);
 assert.match(j3,/cardMode=!cardMode/);
 
 console.log('Testes estáticos Fases 3 e 4 aprovados');
+
+// Contratos estáticos da Fase 5: OAuth Discord, API RAWG server-side, capas e navegação.
+for (const file of ['js/app-phase5.js','api/rawg.js']) assert.doesNotThrow(()=>new vm.Script(read(file),{filename:file}));
+const h5=read('app-phase4.html'),login5=read('index-phase4.html'),app5=read('js/app-phase5.js'),auth5=read('js/auth-phase4.js'),sup5=read('js/supabase-phase2.js'),rawg=read('api/rawg.js');
+assert.match(h5,/css\/app-phase5\.css/);assert.match(h5,/js\/app-phase5\.js/);assert.match(login5,/Continuar com Discord/);assert.match(auth5,/signInWithOAuth/);assert.match(auth5,/provider: 'discord'/);
+assert.match(rawg,/process\.env\.RAWG_API_KEY/);assert.doesNotMatch(rawg,/RAWG_API_KEY\s*=\s*['\"]/);assert.match(app5,/fetch\('\/api\/rawg\?q=/);assert.match(app5,/p5-suggestions/);assert.match(app5,/Minha Biblioteca/);assert.match(sup5,/window\.currentUser = currentUser/);assert.match(sup5,/capa_url/);
+assert.match(v.routes?JSON.stringify(v):read('vercel.json'),/api\/\*\.js/);
