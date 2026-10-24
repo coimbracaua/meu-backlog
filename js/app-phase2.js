@@ -209,7 +209,7 @@
         document.getElementById('form-inicio').value = j.dataInicio ? j.dataInicio.split('T')[0] : '';
         document.getElementById('form-obs').value = j.obs || '';
         const capaInput = document.getElementById('form-capa-url');
-        if (capaInput) capaInput.value = j.capaUrl || '';\n        const capaInput = document.getElementById('form-capa-url');\n        if (capaInput) capaInput.value = j.capaUrl || '';
+        if (capaInput) capaInput.value = j.capaUrl || '';
       }
     } else {
       document.getElementById('form-inicio').value = getLocalDateString();
