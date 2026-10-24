@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - audit/fases-3-4-main-base
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,10 +17,13 @@ jobs:
           node-version: '20'
       - name: Sintaxe JavaScript
         run: |
+          node --check js/supabase-phase2.js
+          node --check js/app-phase2.js
+          node --check js/auth-phase2.js
           node --check js/app-phase3.js
           node --check js/app-phase4.js
           node --check js/auth-phase3.js
           node --check js/auth-phase4.js
           node --check tests/fases-3-4.test.cjs
-      - name: Testes estáticos
+      - name: Testes estaticos
         run: node tests/fases-3-4.test.cjs
