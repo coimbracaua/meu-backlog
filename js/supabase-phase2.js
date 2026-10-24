@@ -21,6 +21,12 @@
 
   let supabaseSdk = null;
 
+  // Mantém o usuário no fluxo de autenticação correspondente à versão do preview.
+  function getLoginRedirectPath() {
+    const path = String(window.location.pathname || '').toLowerCase();
+    return /(?:fase4|phase4)/.test(path) ? 'index-phase4.html' : 'index-phase3.html';
+  }
+
   function initSupabaseClient() {
     if (!window.supabase || typeof window.supabase.createClient !== 'function') {
       supabaseSdk = null;
@@ -51,7 +57,7 @@
   async function verificarSessao() {
     if (!supabaseSdk) {
       showToast('O SDK do Supabase não está disponível. Verifique a conexão e tente novamente.', 'error');
-      setTimeout(() => { window.location.href = 'index-phase2.html'; }, 2000);
+      setTimeout(() => { window.location.href = getLoginRedirectPath(); }, 2000);
       return false;
     }
 
@@ -60,7 +66,7 @@
       if (error) throw error;
 
       if (!data || !data.session || !data.session.user) {
-        window.location.href = 'index-phase2.html';
+        window.location.href = getLoginRedirectPath();
         return false;
       }
 
@@ -81,7 +87,7 @@
     } catch (error) {
       console.error('Falha ao encerrar a sessão:', error);
     } finally {
-      window.location.href = 'index-phase2.html';
+      window.location.href = getLoginRedirectPath();
     }
   }
 

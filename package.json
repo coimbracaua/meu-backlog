@@ -1,10 +1,10 @@
 {
-  "name": "meu-backlog-phase2-audit",
+  "name": "meu-backlog-phase3-4-preview",
   "version": "0.1.0",
   "private": true,
-  "description": "Checks automatizados sem dependências de terceiros para a cópia de auditoria Fase 2.",
+  "description": "Validação estática das Fases 1 a 4 em branch de preview.",
   "scripts": {
-    "check": "node --check js/supabase-phase2.js && node --check js/app-phase2.js && node --check js/auth-phase2.js",
+    "check": "node --check js/supabase-phase2.js && node --check js/app-phase2.js && node --check js/auth-phase2.js && node --check js/app-phase3.js && node --check js/app-phase4.js && node --check js/auth-phase3.js && node --check js/auth-phase4.js",
     "test": "node --test tests/*.test.cjs",
     "validate": "npm run check && npm test"
   },

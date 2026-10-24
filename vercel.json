@@ -18,26 +18,54 @@
   "routes": [
     {
       "src": "^/$",
-      "dest": "/index-phase2.html"
+      "dest": "/index-phase3.html"
     },
     {
       "src": "^/login/?$",
-      "dest": "/index-phase2.html"
+      "dest": "/index-phase3.html"
     },
     {
       "src": "^/index\\.html$",
-      "dest": "/index-phase2.html"
+      "dest": "/index-phase3.html"
     },
     {
       "src": "^/app/?$",
-      "dest": "/app-phase2.html"
+      "dest": "/app-phase3.html"
     },
     {
       "src": "^/app\\.html$",
-      "dest": "/app-phase2.html"
+      "dest": "/app-phase3.html"
     },
     {
-      "src": "/(.*)",
+      "src": "^/fase4/?$",
+      "dest": "/index-phase4.html"
+    },
+    {
+      "src": "^/login-fase4/?$",
+      "dest": "/index-phase4.html"
+    },
+    {
+      "src": "^/app-fase4/?$",
+      "dest": "/app-phase4.html"
+    },
+    {
+      "src": "^/app-fase4\\.html$",
+      "dest": "/app-phase4.html"
+    },
+    {
+      "src": "^/phase4/?$",
+      "dest": "/index-phase4.html"
+    },
+    {
+      "src": "^/phase4/login/?$",
+      "dest": "/index-phase4.html"
+    },
+    {
+      "src": "^/phase4/app/?$",
+      "dest": "/app-phase4.html"
+    },
+    {
+      "src": "^/(.*)$",
       "dest": "/$1"
     }
   ]
