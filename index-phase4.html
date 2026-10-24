@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="css/auth-phase2.css">
+    <link rel="stylesheet" href="css/app-phase5.css">
 </head>
 <body>
 <!-- CANDIDATO FASE 2: não substitui index.html nem index-audit.html. -->
@@ -33,6 +34,8 @@
                 <input type="password" id="login-password" required placeholder="Sua senha secreta">
             </div>
             <button type="submit" class="btn-primary">Iniciar Sessão</button>
+            <div class="p5-auth-divider"><span>ou</span></div>
+            <button type="button" id="discord-login" class="p5-discord-button" onclick="loginWithDiscord()">Continuar com Discord</button>
             <p class="toggle-text">Não tem uma conta? <span onclick="toggleAuthMode()">Crie uma aqui</span></p>
         </form>
 
