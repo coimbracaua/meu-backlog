@@ -71,7 +71,7 @@ async function searchGames(q,list,title,hidden,preview){
   searchAbort=new AbortController();const response=await fetch('/api/rawg?q='+encodeURIComponent(q),{signal:searchAbort.signal,headers:{Accept:'application/json'}});
   const data=await response.json();if(!response.ok)throw new Error(data.error||'Busca indisponível.');
   if(title.value.trim()!==q)return;
-  activeSuggestions=Array.isArray(data.results)?data.results:[];list.replaceChildren();
+  activeSuggestions=(Array.isArray(data.results)?data.results:[]).map(game=>{const platforms=Array.isArray(game.platforms)?game.platforms.map(p=>typeof p==='string'?p:(p?.platform?.name||p?.name||'')).filter(Boolean):[];const genres=Array.isArray(game.genres)?game.genres.map(g=>typeof g==='string'?g:(g?.name||'')).filter(Boolean):[];return {...game,name:typeof game.name==='string'?game.name:(game.name?.name||game.name?.title||''),platforms,genres,background_image:typeof game.background_image==='string'?game.background_image:(game.background_image?.url||game.background_image?.src||null)}}).filter(game=>game.name);list.replaceChildren();
   if(!activeSuggestions.length){const empty=make('div','p5-suggestion','Nenhum jogo encontrado.');list.append(empty);list.hidden=false;return}
   activeSuggestions.forEach(game=>{
    const b=make('button','p5-suggestion');b.type='button';b.setAttribute('role','option');
