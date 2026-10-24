@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player One Dashboard - Backlog Pessoal | Fase 3 — Experiência e descoberta</title>
+  
+  <!-- SDK oficial do Supabase; fallback REST desativado nesta versão de auditoria -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="stylesheet" href="css/app-phase2.css">
+  <link rel="stylesheet" href="css/app-phase3.css">
+</head>
+<body>
+<!-- CANDIDATO FASE 3: não substitui app.html nem app-audit.html. Preview isolado baseado na Fase 2. -->
+<!-- CÓPIA DE TESTE: Fase 3 — Experiência e descoberta. O ficheiro app.html original não foi alterado. -->
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div class="header-info">
+      <h1>🎮 Player One Dashboard</h1>
+      <p class="subtitle">Sua Central de Backlog e Progresso Gamer</p>
+    </div>
+    <div class="header-actions">
+      <span class="sync-badge loading" id="sync-status" onclick="abrirModalDiagnostico()" title="Clique para detalhes de conexão">
+        <span class="pulse-dot"></span> <span id="sync-text">Conectando...</span>
+      </span>
+      <button class="btn btn-outline" onclick="carregarDoBanco(true)" title="Recarregar biblioteca da nuvem">🔄 Atualizar</button>
+      <button class="btn btn-primary" onclick="abrirModal()">➕ Adicionar Jogo</button>
+      <!-- NOVO: Botão de Sair -->
+      <button class="btn btn-danger-outline" onclick="fazerLogout()" title="Sair da conta">🚪 Sair</button>
+    </div>
+  </header>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card purple">
+      <div class="kpi-top">
+        <span class="kpi-title">Biblioteca</span>
+        <span class="kpi-icon">📚</span>
+      </div>
+      <div class="kpi-value" id="kpi-total">0</div>
+      <div class="kpi-sub">jogos rastreados</div>
+    </div>
+
+    <div class="kpi-card pink">
+      <div class="kpi-top">
+        <span class="kpi-title">Meta Anual (2026)</span>
+        <span class="kpi-icon">🏆</span>
+      </div>
+      <div class="kpi-value" id="kpi-zerados">0 <span style="font-size:14px; color:#94a3b8; font-weight:600;">/ 12 zerados</span></div>
+      <div class="progress-container">
+        <div class="progress-bar" id="kpi-progress" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <div class="kpi-card blue">
+      <div class="kpi-top">
+        <span class="kpi-title">Tempo Jogado</span>
+        <span class="kpi-icon">⏱️</span>
+      </div>
+      <div class="kpi-value" id="kpi-horas">0h</div>
+      <div class="kpi-sub">investidas em gameplay</div>
+    </div>
+
+    <div class="kpi-card green">
+      <div class="kpi-top">
+        <span class="kpi-title">Nota Média</span>
+        <span class="kpi-icon">⭐</span>
+      </div>
+      <div class="kpi-value" id="kpi-nota">0.0</div>
+      <div class="kpi-sub">jogos concluídos avaliados</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-section">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Buscar jogo, plataforma, gênero ou anotação..." oninput="aplicarFiltros()">
+    </div>
+    <select id="status-select" class="filter-select" onchange="aplicarFiltros()">
+      <option value="">Todos os Status</option>
+      <option value="Jogando">🔥 Jogando</option>
+      <option value="Na Fila">⏳ Na Fila (Backlog)</option>
+      <option value="Zerado">✅ Zerado</option>
+      <option value="Pausado">⏸️ Pausado</option>
+      <option value="Abandonado">❌ Abandonado</option>
+    </select>
+    <select id="plat-select" class="filter-select" onchange="aplicarFiltros()">
+      <option value="">Todas as Plataformas</option>
+    </select>
+    <select id="sort-select" class="filter-select" onchange="aplicarFiltros()">
+      <option value="recentes">Mais Recentes</option>
+      <option value="antigos">Mais Antigos</option>
+      <option value="nome_asc">Nome (A - Z)</option>
+      <option value="nome_desc">Nome (Z - A)</option>
+      <option value="nota_desc">Maior Nota</option>
+      <option value="horas_desc">Mais Horas Jogadas</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Jogo & Gênero</th>
+          <th>Plataforma</th>
+          <th>Status</th>
+          <th>Avaliação</th>
+          <th>Tempo (Horas)</th>
+          <th>Tempo na Fila</th>
+          <th>Data Início / Fim</th>
+          <th style="text-align: right;">Ações</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <tr>
+          <td colspan="8" style="text-align:center; color:var(--text-muted); padding:40px;">
+            Carregando jogos da biblioteca...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Adicionar / Editar Jogo -->
+<div class="modal-overlay" id="modal-jogo" onclick="handleOverlayClick(event, 'modal-jogo')">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title">Registrar Jogo</h2>
+      <button class="btn-close" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="form-jogo" onsubmit="salvarJogo(event)">
+        <input type="hidden" id="form-id">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Título do Jogo *</label>
+            <input type="text" id="form-titulo" required placeholder="Ex: Elden Ring, Blue Prince, Hades II">
+          </div>
+          <div class="form-group">
+            <label>Plataforma *</label>
+            <input type="text" id="form-plat" required placeholder="Ex: PC, Switch, PS5, Xbox">
+          </div>
+          <div class="form-group">
+            <label>Gênero</label>
+            <input type="text" id="form-genero" placeholder="Ex: RPG, Puzzle, Ação, Roguelike">
+          </div>
+          <div class="form-group">
+            <label>Status *</label>
+            <select id="form-status" required>
+              <option value="Na Fila">⏳ Na Fila (Backlog)</option>
+              <option value="Jogando">🔥 Jogando</option>
+              <option value="Zerado">✅ Zerado</option>
+              <option value="Pausado">⏸️ Pausado</option>
+              <option value="Abandonado">❌ Abandonado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Nota Pessoal (1 a 5)</label>
+            <select id="form-nota">
+              <option value="0">Sem nota ainda</option>
+              <option value="1">⭐ 1 Estrela (Ruim)</option>
+              <option value="2">⭐⭐ 2 Estrelas (Regular)</option>
+              <option value="3">⭐⭐⭐ 3 Estrelas (Bom)</option>
+              <option value="4">⭐⭐⭐⭐ 4 Estrelas (Ótimo)</option>
+              <option value="5">⭐⭐⭐⭐⭐ 5 Estrelas (Obra-prima)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Horas Jogadas</label>
+            <input type="number" step="0.1" min="0" id="form-horas" placeholder="0.0">
+          </div>
+          <div class="form-group">
+            <label>Data Adição / Início</label>
+            <input type="date" id="form-inicio">
+          </div>
+          <div class="form-group full">
+            <label>Mini Review / Observações</label>
+            <textarea id="form-obs" rows="3" placeholder="Anotações, impressões, onde empacou ou detalhes do gameplay..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btn-salvar">
+            <span id="btn-salvar-text">Salvar na Nuvem</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Diagnóstico / Conexão -->
+<div class="modal-overlay" id="modal-diag" onclick="handleOverlayClick(event, 'modal-diag')">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🔌 Diagnóstico da Conexão Supabase</h2>
+      <button class="btn-close" onclick="fecharModalDiagnostico()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">
+        O painel utiliza conexão direta com o Supabase via biblioteca oficial. Não existe fallback REST automático.
+      </p>
+      <div class="diag-box" id="diag-details">Carregando status...</div>
+      <div style="margin-top:16px; display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="testarConexaoManual()">⚡ Testar Conexão Novamente</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="js/supabase-phase2.js"></script>
+<script src="js/app-phase2.js"></script>
+<script src="js/app-phase3.js"></script>
+</body>
+</html>
