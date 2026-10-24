@@ -202,7 +202,7 @@
         document.getElementById('form-nota').value = j.nota || 0;
         document.getElementById('form-horas').value = j.horas > 0 ? j.horas : '';
         document.getElementById('form-inicio').value = j.dataInicio ? j.dataInicio.split('T')[0] : '';
-        document.getElementById('form-obs').value = j.obs || '';
+        document.getElementById('form-obs').value = j.obs || '';\n        const capaInput = document.getElementById('form-capa-url');\n        if (capaInput) capaInput.value = j.capaUrl || '';
       }
     } else {
       document.getElementById('form-inicio').value = getLocalDateString();
