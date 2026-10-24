@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const read=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
-for(const file of ['app-phase3.html','index-phase3.html','app-phase4.html','index-phase4.html','css/app-phase3.css','css/app-phase4.css','js/app-phase3.js','js/app-phase4.js','js/auth-phase3.js','js/auth-phase4.js'])if(!fs.existsSync(path.join(__dirname,'..',file)))throw Error('Falta '+file);
+for(const file of ['app-phase3.html','index-phase3.html','app-phase4.html','index-phase4.html','css/app-phase3.css','css/app-phase4.css','css/app-phase5.css','js/app-phase3.js','js/app-phase4.js','js/app-phase5.js','api/rawg.js','js/auth-phase3.js','js/auth-phase4.js'])if(!fs.existsSync(path.join(__dirname,'..',file)))throw Error('Falta '+file);
 for(const file of ['js/app-phase3.js','js/app-phase4.js','js/auth-phase3.js','js/auth-phase4.js'])new vm.Script(read(file),{filename:file});
 const h3=read('app-phase3.html'),h4=read('app-phase4.html'),j3=read('js/app-phase3.js'),j4=read('js/app-phase4.js');
 assert.match(h3,/js\/app-phase2\.js/);assert.match(h3,/js\/app-phase3\.js/);assert.doesNotMatch(h3,/js\/app-phase4\.js/);
@@ -46,7 +46,7 @@ console.log('Testes estáticos Fases 3 e 4 aprovados');
 
 // Contratos estáticos da Fase 5: OAuth Discord, API RAWG server-side, capas e navegação.
 for (const file of ['js/app-phase5.js','api/rawg.js']) assert.doesNotThrow(()=>new vm.Script(read(file),{filename:file}));
-const h5=read('app-phase4.html'),login5=read('index-phase4.html'),app5=read('js/app-phase5.js'),auth5=read('js/auth-phase4.js'),sup5=read('js/supabase-phase2.js'),rawg=read('api/rawg.js');
+const h5=read('app-phase4.html'),login5=read('index-phase4.html'),app5=read('js/app-phase5.js'),auth5=read('js/auth-phase4.js'),app2=read('js/app-phase2.js'),rawg=read('api/rawg.js');
 assert.match(h5,/css\/app-phase5\.css/);assert.match(h5,/js\/app-phase5\.js/);assert.match(login5,/Continuar com Discord/);assert.match(auth5,/signInWithOAuth/);assert.match(auth5,/provider: 'discord'/);
 assert.match(rawg,/process\.env\.RAWG_API_KEY/);assert.doesNotMatch(rawg,/RAWG_API_KEY\s*=\s*['\"]/);assert.match(app5,/fetch\('\/api\/rawg\?q=/);assert.match(app5,/p5-suggestions/);assert.match(app5,/Minha Biblioteca/);assert.match(sup5,/window\.currentUser = currentUser/);assert.match(sup5,/capa_url/);
 assert.match(v.routes?JSON.stringify(v):read('vercel.json'),/api\/\*\.js/);
