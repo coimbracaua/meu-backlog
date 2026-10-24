@@ -1,8 +1,9 @@
-name: Fases 3 e 4 - validacao estatica
+name: Fases 3 a 5 - validacao estatica
 on:
   push:
     branches:
       - audit/fases-3-4-main-base
+      - feature/discord-rawg-library
   pull_request:
   workflow_dispatch:
 permissions:
@@ -24,6 +25,8 @@ jobs:
           node --check js/app-phase4.js
           node --check js/auth-phase3.js
           node --check js/auth-phase4.js
+          node --check js/app-phase5.js
+          node --check api/rawg.js
           node --check tests/fases-3-4.test.cjs
       - name: Testes estaticos
         run: node tests/fases-3-4.test.cjs

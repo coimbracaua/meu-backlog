@@ -52,8 +52,10 @@
         nota: Number(row.nota) || 0,
         horas: Number(row.horas_jogadas) || 0,
         dataInicio: row.data_inicio || '',
-        obs: row.obs || ''
+        obs: row.obs || '',
+        capaUrl: row.capa_url || ''
       }));
+      window.biblioteca = biblioteca;
 
       popularDropdowns();
       aplicarFiltros();
@@ -133,6 +135,7 @@
       horas_jogadas: parseFloat(document.getElementById('form-horas').value) || 0,
       data_inicio: dataInicioVal ? dataInicioVal : null,
       obs: document.getElementById('form-obs').value.trim(),
+      capa_url: document.getElementById('form-capa-url')?.value || '',
       // NOVO: Adiciona obrigatoriamente a assinatura do dono do jogo para a regra RLS
       user_id: currentUser.id
     };
@@ -188,6 +191,8 @@
   function abrirModal(id = null) {
     const form = document.getElementById('form-jogo');
     form.reset();
+    const capaInput = document.getElementById('form-capa-url');
+    if (capaInput) capaInput.value = '';
     document.getElementById('form-id').value = '';
     document.getElementById('modal-title').textContent = id ? 'Editar Jogo' : 'Registrar Jogo';
 
@@ -203,6 +208,8 @@
         document.getElementById('form-horas').value = j.horas > 0 ? j.horas : '';
         document.getElementById('form-inicio').value = j.dataInicio ? j.dataInicio.split('T')[0] : '';
         document.getElementById('form-obs').value = j.obs || '';
+        const capaInput = document.getElementById('form-capa-url');
+        if (capaInput) capaInput.value = j.capaUrl || '';
       }
     } else {
       document.getElementById('form-inicio').value = getLocalDateString();

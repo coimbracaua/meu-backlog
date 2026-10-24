@@ -70,8 +70,19 @@ function toggleAuthMode() {
             const username = document.getElementById('register-username').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
+            const confirmation = document.getElementById('register-password-confirm').value;
+            if (password.length < 8) {
+                showMessage('Crie uma senha com pelo menos 8 caracteres. Uma frase-senha é uma boa opção.', 'error');
+                document.getElementById('register-password').focus();
+                return;
+            }
+            if (password !== confirmation) {
+                showMessage('As senhas não coincidem. Confira os dois campos.', 'error');
+                document.getElementById('register-password-confirm').focus();
+                return;
+            }
 
-            const btn = e.target.querySelector('button');
+            const btn = e.target.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
             btn.innerText = "Carregando...";
             btn.disabled = true;
@@ -103,6 +114,7 @@ function toggleAuthMode() {
             } else {
                 showMessage('Conta e perfil criados com sucesso! Faça login.', 'success');
                 document.getElementById('register-form').reset();
+                updatePasswordFeedback();
                 setTimeout(toggleAuthMode, 2500);
             }
         });
@@ -146,3 +158,69 @@ function toggleAuthMode() {
                 }, 1000);
             }
         });
+
+// OAuth Discord via Supabase Auth. O provider precisa ser ativado no painel Supabase.
+async function loginWithDiscord() {
+  if (!supabaseClient) { showMessage('O serviço de autenticação não está disponível.', 'error'); return; }
+  const button = document.getElementById('discord-login');
+  if (button) { button.disabled = true; button.textContent = 'Conectando ao Discord...'; }
+  try {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'discord',
+      options: { redirectTo: new URL('/app', window.location.origin).href }
+    });
+    if (error) throw error;
+  } catch (error) {
+    showMessage('Não foi possível iniciar o login Discord. Confira se o provider está ativo no Supabase.', 'error');
+    if (button) { button.disabled = false; button.textContent = 'Continuar com Discord'; }
+  }
+}
+
+
+// Validação amigável de senha: incentiva comprimento e detecta erros de digitação.
+// A segurança real da conta continua sendo aplicada pelo Supabase Auth.
+function updatePasswordFeedback() {
+  const password = document.getElementById('register-password');
+  const confirmation = document.getElementById('register-password-confirm');
+  const strength = document.getElementById('password-strength');
+  const match = document.getElementById('password-match');
+  if (!password || !confirmation || !strength || !match) return;
+  const value = password.value;
+  let score = 0;
+  if (value.length >= 8) score++;
+  if (value.length >= 16) score++;
+  if (/[a-z]/.test(value) && /[A-Z]/.test(value)) score++;
+  if (/\d/.test(value)) score++;
+  if (/[^A-Za-z0-9]/.test(value)) score++;
+  let label = 'Muito curta: use pelo menos 8 caracteres.';
+  if (value.length >= 8) label = score >= 4 ? 'Boa senha: comprimento e variedade adequados.' : 'Razoável: considere uma frase mais longa e menos previsível.';
+  if (value.length >= 16 && score >= 3) label = 'Boa frase-senha: longa e mais fácil de memorizar.';
+  strength.textContent = value ? label : 'Digite uma senha para verificar a força.';
+  strength.dataset.strength = value.length < 8 ? 'weak' : score >= 4 || (value.length >= 16 && score >= 3) ? 'good' : 'medium';
+  if (!confirmation.value) {
+    match.textContent = 'Confirme a senha para evitar erros de digitação.';
+    match.dataset.match = 'empty';
+  } else if (value === confirmation.value) {
+    match.textContent = 'As senhas coincidem.';
+    match.dataset.match = 'yes';
+  } else {
+    match.textContent = 'As senhas ainda não coincidem.';
+    match.dataset.match = 'no';
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const password = document.getElementById('register-password');
+  const confirmation = document.getElementById('register-password-confirm');
+  password?.addEventListener('input', updatePasswordFeedback);
+  confirmation?.addEventListener('input', updatePasswordFeedback);
+  document.querySelectorAll('[data-toggle-password]').forEach(button => {
+    button.addEventListener('click', () => {
+      const input = document.getElementById(button.dataset.togglePassword);
+      if (!input) return;
+      const reveal = input.type === 'password';
+      input.type = reveal ? 'text' : 'password';
+      button.textContent = reveal ? 'Ocultar' : 'Mostrar';
+      button.setAttribute('aria-label', reveal ? 'Ocultar senha' : 'Mostrar senha');
+    });
+  });
+});

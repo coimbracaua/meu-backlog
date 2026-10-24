@@ -3,6 +3,10 @@
   "name": "meu-backlog",
   "builds": [
     {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "*.html",
       "use": "@vercel/static"
     },
@@ -63,6 +67,10 @@
     {
       "src": "^/phase4/app/?$",
       "dest": "/app-phase4.html"
+    },
+    {
+      "src": "^/api/(.*)$",
+      "dest": "/api/$1.js"
     },
     {
       "src": "^/(.*)$",
