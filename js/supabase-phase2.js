@@ -73,6 +73,7 @@
       }
 
       currentUser = data.session.user;
+      window.currentUser = currentUser;
       return true;
     } catch (error) {
       connectionInfo.error = error && error.message ? error.message : 'Não foi possível validar a sessão';
