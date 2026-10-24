@@ -9,4 +9,14 @@ assert.match(h4,/js\/app-phase2\.js/);assert.match(h4,/js\/app-phase3\.js/);asse
 assert.match(j3,/Math\.random/);assert.match(j3,/p3-metrics/);assert.doesNotMatch(j3,/\.innerHTML\s*=/);
 assert.match(j4,/meu-backlog:phase4:/);assert.match(j4,/currentUser\?\.id/);assert.match(j4,/confirm\('Adicionar '/);assert.match(j4,/db\.insert\(g\)/);assert.doesNotMatch(j4,/\.innerHTML\s*=/);
 assert.match(read('js/auth-phase3.js'),/app-phase3\.html/);assert.match(read('js/auth-phase4.js'),/app-phase4\.html/);
+
+const supabase=read('js/supabase-phase2.js');
+assert.match(supabase,/function getLoginRedirectPath\(\)/);
+assert.doesNotMatch(supabase,/window\.location\.href\s*=\s*['"]index-phase2\.html['"]/);
+assert.match(supabase,/index-phase3\.html/);assert.match(supabase,/index-phase4\.html/);
+const v=JSON.parse(read('vercel.json'));
+assert.equal(v.routes.find(r=>r.src==='^/).dest,'/index-phase3.html');
+assert.equal(v.routes.find(r=>r.src==='^/app/?).dest,'/app-phase3.html');
+assert.equal(v.routes.find(r=>r.src==='^/fase4/?).dest,'/index-phase4.html');
+assert.equal(v.routes.find(r=>r.src==='^/app-fase4/?).dest,'/app-phase4.html');
 console.log('Testes estáticos Fases 3 e 4 aprovados');
