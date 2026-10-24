@@ -146,3 +146,20 @@ function toggleAuthMode() {
                 }, 1000);
             }
         });
+
+// OAuth Discord via Supabase Auth. O provider precisa ser ativado no painel Supabase.
+async function loginWithDiscord() {
+  if (!supabaseClient) { showMessage('O serviço de autenticação não está disponível.', 'error'); return; }
+  const button = document.getElementById('discord-login');
+  if (button) { button.disabled = true; button.textContent = 'Conectando ao Discord...'; }
+  try {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'discord',
+      options: { redirectTo: new URL('/app', window.location.origin).href }
+    });
+    if (error) throw error;
+  } catch (error) {
+    showMessage('Não foi possível iniciar o login Discord. Confira se o provider está ativo no Supabase.', 'error');
+    if (button) { button.disabled = false; button.textContent = 'Continuar com Discord'; }
+  }
+}
