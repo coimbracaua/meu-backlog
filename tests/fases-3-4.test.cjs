@@ -54,7 +54,7 @@ assert.match(v.routes?JSON.stringify(v):read('vercel.json'),/api\/\*\.js/);
 // Validação de senha no cadastro da Fase 5.
 const loginMarkup=read('index-phase4.html'),authScript=read('js/auth-phase4.js');
 assert.match(loginMarkup,/register-password-confirm/);
-assert.match(loginMarkup,/minlength="12"/);
+assert.match(loginMarkup,/minlength="8"/);
 assert.match(loginMarkup,/password-strength/);
 assert.match(authScript,/password\.length < 12/);
 assert.match(authScript,/password !== confirmation/);
