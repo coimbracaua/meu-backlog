@@ -32,16 +32,17 @@ test('HTML candidato referencia os ficheiros de Fase 2 presentes no repositório
   assert.match(loginHtml, /href="css\/auth-phase2\.css"/);
   assert.match(loginHtml, /src="js\/auth-phase2\.js"/);
   assert.match(authJs, /app-phase2\.html/);
-  assert.match(dataJs, /index-phase2\.html/);
+  assert.match(dataJs, /function getLoginRedirectPath\(\)/);
 });
 
-test('rotas do preview apontam para as páginas candidatas da Fase 2', () => {
+test('rotas do preview apontam para páginas HTML que existem no repositório', () => {
   const routes = vercelConfig.routes;
-  assert.ok(routes.some((route) => route.src === '^/$' && route.dest === '/index-phase2.html'));
-  assert.ok(routes.some((route) => route.src === '^/login/?$' && route.dest === '/index-phase2.html'));
-  assert.ok(routes.some((route) => route.src === '^/index\\.html$' && route.dest === '/index-phase2.html'));
-  assert.ok(routes.some((route) => route.src === '^/app/?$' && route.dest === '/app-phase2.html'));
-  assert.ok(routes.some((route) => route.src === '^/app\\.html$' && route.dest === '/app-phase2.html'));
+  for (const route of routes) {
+    if (route.dest.includes('$')) continue; // regra genérica: /$1
+    assert.ok(fs.existsSync(path.join(root, route.dest.replace(/^\//, ''))), 'Rota ' + route.src + ' aponta para ficheiro inexistente: ' + route.dest);
+  }
+  assert.ok(routes.some((route) => route.src === '^/$'), 'Falta a rota da raiz.');
+  assert.ok(routes.some((route) => route.src === '^/app/?$'), 'Falta a rota /app.');
 });
 
 test('todos os ficheiros JavaScript têm sintaxe válida', () => {
@@ -111,7 +112,8 @@ test('utilitários de data e estado preservam resultados esperados', () => {
 
 test('auth e interface usam nomes de ficheiros versionados para os redirecionamentos', () => {
   assert.match(authJs, /app-phase2\.html/);
-  assert.match(dataJs, /index-phase2\.html/);
+  assert.match(dataJs, /index-phase3\.html/);
+  assert.match(dataJs, /index-phase4\.html/);
   assert.doesNotMatch(authJs, /window\.location\.href\s*=\s*['"]app\.html/);
   assert.doesNotMatch(dataJs, /window\.location\.href\s*=\s*['"]index\.html/);
 });

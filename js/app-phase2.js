@@ -8,6 +8,9 @@
     const logado = await verificarSessao();
     if (!logado) return; // Interrompe o carregamento se não houver usuário logado
 
+    // Avisa os módulos das Fases 3/4 de que currentUser já está definido.
+    document.dispatchEvent(new Event('backlog:session-ready'));
+
     carregarDoBanco();
 
     // Atalhos de teclado
