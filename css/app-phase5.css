@@ -9,3 +9,6 @@
 #password-match[data-match="no"]{color:#b91c1c}
 .p5-password-toggle{border:0;background:transparent;color:var(--text-muted);font:inherit;font-size:12px;padding:4px 0;cursor:pointer}
 .p5-password-toggle:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* Correção do menu do perfil: posicionamento relativo ao próprio controle. */
+.p5-profile-wrap{position:relative;display:inline-flex;align-items:center;flex:0 0 auto;z-index:10010}.p5-profile-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:10020;min-width:250px}.p5-profile-wrap:has(.p5-profile[aria-expanded="true"]){z-index:10020}
