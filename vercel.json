@@ -53,6 +53,18 @@
       "dest": "/app-phase4.html"
     },
     {
+      "src": "^/phase4/?$",
+      "dest": "/index-phase4.html"
+    },
+    {
+      "src": "^/phase4/login/?$",
+      "dest": "/index-phase4.html"
+    },
+    {
+      "src": "^/phase4/app/?$",
+      "dest": "/app-phase4.html"
+    },
+    {
       "src": "^/(.*)$",
       "dest": "/$1"
     }
