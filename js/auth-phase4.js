@@ -71,8 +71,8 @@ function toggleAuthMode() {
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const confirmation = document.getElementById('register-password-confirm').value;
-            if (password.length < 12) {
-                showMessage('Crie uma senha com pelo menos 12 caracteres. Uma frase-senha é uma boa opção.', 'error');
+            if (password.length < 8) {
+                showMessage('Crie uma senha com pelo menos 8 caracteres. Uma frase-senha é uma boa opção.', 'error');
                 document.getElementById('register-password').focus();
                 return;
             }
@@ -187,16 +187,16 @@ function updatePasswordFeedback() {
   if (!password || !confirmation || !strength || !match) return;
   const value = password.value;
   let score = 0;
-  if (value.length >= 12) score++;
+  if (value.length >= 8) score++;
   if (value.length >= 16) score++;
   if (/[a-z]/.test(value) && /[A-Z]/.test(value)) score++;
   if (/\d/.test(value)) score++;
   if (/[^A-Za-z0-9]/.test(value)) score++;
-  let label = 'Muito curta: use pelo menos 12 caracteres.';
-  if (value.length >= 12) label = score >= 4 ? 'Boa senha: comprimento e variedade adequados.' : 'Razoável: considere uma frase mais longa e menos previsível.';
+  let label = 'Muito curta: use pelo menos 8 caracteres.';
+  if (value.length >= 8) label = score >= 4 ? 'Boa senha: comprimento e variedade adequados.' : 'Razoável: considere uma frase mais longa e menos previsível.';
   if (value.length >= 16 && score >= 3) label = 'Boa frase-senha: longa e mais fácil de memorizar.';
   strength.textContent = value ? label : 'Digite uma senha para verificar a força.';
-  strength.dataset.strength = value.length < 12 ? 'weak' : score >= 4 || (value.length >= 16 && score >= 3) ? 'good' : 'medium';
+  strength.dataset.strength = value.length < 8 ? 'weak' : score >= 4 || (value.length >= 16 && score >= 3) ? 'good' : 'medium';
   if (!confirmation.value) {
     match.textContent = 'Confirme a senha para evitar erros de digitação.';
     match.dataset.match = 'empty';
