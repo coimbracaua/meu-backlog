@@ -1,0 +1,25 @@
+name: Fases 3 e 4 - validacao estatica
+on:
+  push:
+    branches:
+      - audit/fases-3-4-main-base
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Sintaxe JavaScript
+        run: |
+          node --check js/app-phase3.js
+          node --check js/app-phase4.js
+          node --check js/auth-phase3.js
+          node --check js/auth-phase4.js
+          node --check tests/fases-3-4.test.cjs
+      - name: Testes estáticos
+        run: node tests/fases-3-4.test.cjs
