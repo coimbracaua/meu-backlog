@@ -1,10 +1,10 @@
 {
-  "name": "meu-backlog-phase3-4-preview",
+  "name": "meu-backlog",
   "version": "0.1.0",
   "private": true,
-  "description": "Validação estática das Fases 1 a 4 em branch de preview.",
+  "description": "Aplicação de backlog gamer com preview RAWG/Discord e testes estáticos.",
   "scripts": {
-    "check": "node --check js/supabase-phase2.js && node --check js/app-phase2.js && node --check js/auth-phase2.js && node --check js/app-phase3.js && node --check js/app-phase4.js && node --check js/auth-phase3.js && node --check js/auth-phase4.js",
+    "check": "node --check js/supabase-phase2.js && node --check js/app-phase2.js && node --check js/auth-phase2.js && node --check js/app-phase3.js && node --check js/app-phase4.js && node --check js/auth-phase3.js && node --check js/auth-phase4.js && node --check js/app-phase5.js && node --check api/rawg.js",
     "test": "node --test tests/*.test.cjs",
     "validate": "npm run check && npm test"
   },
