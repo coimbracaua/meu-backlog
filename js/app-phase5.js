@@ -15,15 +15,17 @@ function setupLayout(){
  const main=make('main','p5-main');container.parentNode.insertBefore(shell,container);main.append(container);shell.append(sidebar,main);
  const header=container.querySelector('header'),actions=header?.querySelector('.header-actions');
  if(actions&&!$('p5-profile')){
-  const info=userInfo(),profile=make('button','p5-profile');profile.id='p5-profile';profile.type='button';profile.setAttribute('aria-expanded','false');
+  const wrap=make('div','p5-profile-wrap');
+  const info=userInfo(),profile=make('button','p5-profile');profile.id='p5-profile';profile.type='button';profile.setAttribute('aria-expanded','false');profile.setAttribute('aria-controls','p5-profile-menu');
   if(info.avatar){const img=make('img','p5-avatar');img.src=info.avatar;img.alt='';img.referrerPolicy='no-referrer';profile.append(img)}else profile.append(make('span','p5-avatar',info.name.slice(0,1).toUpperCase()));
   profile.append(make('span','p5-profile-name',info.name),make('span','','⌄'));
-  const menu=make('div','p5-profile-menu');menu.id='p5-profile-menu';menu.hidden=true;menu.append(make('strong','',info.name),make('small','',info.email||'Conta autenticada'));
-  const settings=make('button','','Ver configurações do perfil');settings.type='button';settings.addEventListener('click',()=>activateTab('settings'));
-  const logout=make('button','','Sair da conta');logout.type='button';logout.addEventListener('click',()=>window.fazerLogout?.());
-  menu.append(settings,logout);profile.addEventListener('click',()=>{menu.hidden=!menu.hidden;profile.setAttribute('aria-expanded',String(!menu.hidden))});
-  document.addEventListener('click',e=>{if(!profile.contains(e.target)&&!menu.contains(e.target)){menu.hidden=true;profile.setAttribute('aria-expanded','false')}});
-  actions.insertBefore(profile,actions.lastElementChild||null);actions.append(menu);
+  const menu=make('div','p5-profile-menu');menu.id='p5-profile-menu';menu.hidden=true;menu.setAttribute('role','menu');menu.append(make('strong','',info.name),make('small','',info.email||'Conta autenticada'));
+  const settings=make('button','','Ver configurações do perfil');settings.type='button';settings.setAttribute('role','menuitem');settings.addEventListener('click',()=>{menu.hidden=true;profile.setAttribute('aria-expanded','false');activateTab('settings')});
+  const logout=make('button','','Sair da conta');logout.type='button';logout.setAttribute('role','menuitem');logout.addEventListener('click',()=>window.fazerLogout?.());
+  menu.append(settings,logout);profile.addEventListener('click',e=>{e.stopPropagation();menu.hidden=!menu.hidden;profile.setAttribute('aria-expanded',String(!menu.hidden))});
+  document.addEventListener('click',e=>{if(!wrap.contains(e.target)){menu.hidden=true;profile.setAttribute('aria-expanded','false')}});
+  wrap.append(profile,menu);
+  actions.insertBefore(wrap,actions.lastElementChild||null);
  }
  const p4=$('p4-root');if(p4){const info=userInfo(),panel=make('section','p5-settings-profile');if(info.avatar){const img=make('img','');img.src=info.avatar;img.alt='Avatar do perfil';img.referrerPolicy='no-referrer';panel.append(img)}const details=make('div','');details.append(make('strong','',info.name),make('small','',info.email||'Conta autenticada via Supabase'));panel.append(details);p4.insertBefore(panel,p4.children[1]||null);const note=make('p','p5-note','Integrações: o login Discord depende de ativar o provider no Supabase; a busca RAWG depende da variável RAWG_API_KEY na Vercel. Consulte SETUP-DISCORD-RAWG.md.');p4.append(note)}
  const toggle=container.querySelector('.p3-root .p3-heading:nth-child(2) button');if(toggle&&$('p3-cards')?.hidden)toggle.click();
