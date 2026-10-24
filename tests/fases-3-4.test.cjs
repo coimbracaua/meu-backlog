@@ -20,4 +20,25 @@ assert.equal(routeDest('^/$'),'/index-phase3.html');
 assert.equal(routeDest('^/app/?$'),'/app-phase3.html');
 assert.equal(routeDest('^/fase4/?$'),'/index-phase4.html');
 assert.equal(routeDest('^/app-fase4/?$'),'/app-phase4.html');
+
+// Contratos adicionais da Fase 4: importação, exportação e recursos locais.
+assert.match(j4,/schema:'meu-backlog-export'/);
+assert.match(j4,/version:1/);
+assert.match(j4,/URL\.createObjectURL/);
+assert.match(j4,/file\.accept='\.json,application\/json'/);
+assert.match(j4,/JSON\.parse\(await file\.text\(\)\)/);
+assert.match(j4,/typeof g==='object'/);
+assert.match(j4,/!titulo\|\|!plataforma/);
+assert.match(j4,/Math\.max\(0,Math\.min\(5,Number\(g\.nota\)\|\|0\)\)/);
+assert.match(j4,/n<1\|\|n>1440/);
+assert.match(j4,/save\('wishlist',wishlist\)/);
+assert.match(j4,/save\('sessions',sessions\)/);
+assert.match(j4,/currentUser\?\.id/);
+assert.match(j4,/Não serão apagados nem atualizados registos existentes/);
+assert.match(j4,/não alteram automaticamente as horas no Supabase/);
+assert.match(j4,/localStorage\.setItem\(key\(type\),JSON\.stringify\(data\)\)/);
+assert.match(j4,/function renderCardButtons\(\)/);
+assert.match(j3,/id='p3-cards'/);
+assert.match(j3,/cardMode=!cardMode/);
+
 console.log('Testes estáticos Fases 3 e 4 aprovados');
