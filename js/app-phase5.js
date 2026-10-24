@@ -6,7 +6,8 @@ let searchTimer=null,searchAbort=null,lastSelectedTitle='',activeSuggestions=[];
 function make(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n}
 function userInfo(){const u=window.currentUser||null,meta=u?.user_metadata||{};return {name:meta.full_name||meta.global_name||meta.name||meta.username||(u?.email||'Jogador').split('@')[0],email:u?.email||'',avatar:safeImage(meta.avatar_url||meta.picture||meta.avatar)}}
 function setupLayout(){
- const container=document.querySelector('.container');if(!container||document.querySelector('.p5-layout'))return;
+ const container=document.querySelector('.container');if(!container)return;
+ if(document.querySelector('.p5-layout')){refreshProfile();activateTab('overview');return;}
  const shell=make('div','p5-layout'),sidebar=make('aside','p5-sidebar'),brand=make('div','p5-brand','PLAYER ONE');brand.append(make('small','','YOUR GAMING HUB'));
  const nav=make('nav','p5-nav');nav.setAttribute('aria-label','Navegação principal');
  [['overview','▦  Visão Geral'],['library','▣  Minha Biblioteca'],['settings','⚙  Configurações']].forEach(([id,label])=>{const b=make('button','',label);b.type='button';b.dataset.tab=id;b.addEventListener('click',()=>activateTab(id));nav.append(b)});
@@ -27,6 +28,12 @@ function setupLayout(){
  const p4=$('p4-root');if(p4){const info=userInfo(),panel=make('section','p5-settings-profile');if(info.avatar){const img=make('img','');img.src=info.avatar;img.alt='Avatar do perfil';img.referrerPolicy='no-referrer';panel.append(img)}const details=make('div','');details.append(make('strong','',info.name),make('small','',info.email||'Conta autenticada via Supabase'));panel.append(details);p4.insertBefore(panel,p4.children[1]||null);const note=make('p','p5-note','Integrações: o login Discord depende de ativar o provider no Supabase; a busca RAWG depende da variável RAWG_API_KEY na Vercel. Consulte SETUP-DISCORD-RAWG.md.');p4.append(note)}
  const toggle=container.querySelector('.p3-root .p3-heading:nth-child(2) button');if(toggle&&$('p3-cards')?.hidden)toggle.click();
  activateTab('overview');
+}
+function refreshProfile(){
+ const info=userInfo(),profile=$('p5-profile'),menu=$('p5-profile-menu');
+ if(profile){profile.replaceChildren();if(info.avatar){const img=make('img','p5-avatar');img.src=info.avatar;img.alt='';img.referrerPolicy='no-referrer';profile.append(img)}else profile.append(make('span','p5-avatar',info.name.slice(0,1).toUpperCase()));profile.append(make('span','p5-profile-name',info.name),make('span','','⌄'));}
+ if(menu){menu.replaceChildren(make('strong','',info.name),make('small','',info.email||'Conta autenticada'));const settings=make('button','','Ver configurações do perfil');settings.type='button';settings.addEventListener('click',()=>activateTab('settings'));const logout=make('button','','Sair da conta');logout.type='button';logout.addEventListener('click',()=>window.fazerLogout?.());menu.append(settings,logout);}
+ const panel=document.querySelector('.p5-settings-profile');if(panel){panel.replaceChildren();if(info.avatar){const img=make('img','');img.src=info.avatar;img.alt='Avatar do perfil';img.referrerPolicy='no-referrer';panel.append(img)}const details=make('div','');details.append(make('strong','',info.name),make('small','',info.email||'Conta autenticada via Supabase'));panel.append(details)}
 }
 function activateTab(id){
  document.querySelectorAll('.p5-nav button').forEach(b=>{if(b.dataset.tab===id)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
@@ -89,6 +96,6 @@ function initObservers(){
  ensureAutocomplete();renderCovers();
 }
 document.addEventListener('DOMContentLoaded',()=>{setupLayout();initObservers()});
-document.addEventListener('backlog:session-ready',()=>{setupLayout();initObservers()});
+document.addEventListener('backlog:session-ready',()=>{setupLayout();refreshProfile();initObservers()});
 window.addEventListener('load',()=>{renderCovers()});
 })();
