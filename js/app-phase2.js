@@ -79,7 +79,7 @@
       const tr = document.createElement('tr');
       const td = document.createElement('td');
       td.colSpan = 8;
-      td.style.cssText = 'text-align:center; padding:30px; color:#f87171;';
+      td.style.cssText = 'text-align:center; padding:30px; color:var(--danger, #f87171);';
 
       const title = document.createElement('strong');
       title.textContent = '⚠️ Não foi possível carregar os jogos do Supabase.';
@@ -328,7 +328,7 @@
     zeradosBox.appendChild(document.createTextNode(String(zerados) + ' '));
 
     const meta = document.createElement('span');
-    meta.style.cssText = 'font-size:14px; color:#94a3b8; font-weight:600;';
+    meta.style.cssText = 'font-size:14px; color:var(--text-muted, #94a3b8); font-weight:600;';
     meta.textContent = '/ ' + META_ANUAL + ' zerados';
     zeradosBox.appendChild(meta);
 
