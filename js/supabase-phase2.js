@@ -24,7 +24,9 @@
   // Mantém o usuário no fluxo de autenticação correspondente à versão do preview.
   function getLoginRedirectPath() {
     const path = String(window.location.pathname || '').toLowerCase();
-    return /(?:fase4|phase4)/.test(path) ? 'index-phase4.html' : 'index-phase3.html';
+    // A Fase 4 é a versão final: vale pela rota OU pelo script carregado na página (ex.: / e /app).
+    const isPhase4 = /(?:fase4|phase4)/.test(path) || !!document.querySelector('script[src*="app-phase4"]');
+    return isPhase4 ? 'index-phase4.html' : 'index-phase3.html';
   }
 
   function initSupabaseClient() {

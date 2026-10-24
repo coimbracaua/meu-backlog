@@ -16,8 +16,8 @@ assert.doesNotMatch(supabase,/window\.location\.href\s*=\s*['"]index-phase2\.htm
 assert.match(supabase,/index-phase3\.html/);assert.match(supabase,/index-phase4\.html/);
 const v=JSON.parse(read('vercel.json'));
 const routeDest=pattern=>v.routes.find(r=>r.src===pattern)?.dest;
-assert.equal(routeDest('^/$'),'/index-phase3.html');
-assert.equal(routeDest('^/app/?$'),'/app-phase3.html');
+assert.equal(routeDest('^/$'),'/index-phase4.html');
+assert.equal(routeDest('^/app/?$'),'/app-phase4.html');
 assert.equal(routeDest('^/fase4/?$'),'/index-phase4.html');
 assert.equal(routeDest('^/app-fase4/?$'),'/app-phase4.html');
 

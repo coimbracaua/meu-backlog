@@ -18,23 +18,23 @@
   "routes": [
     {
       "src": "^/$",
-      "dest": "/index-phase3.html"
+      "dest": "/index-phase4.html"
     },
     {
       "src": "^/login/?$",
-      "dest": "/index-phase3.html"
+      "dest": "/index-phase4.html"
     },
     {
       "src": "^/index\\.html$",
-      "dest": "/index-phase3.html"
+      "dest": "/index-phase4.html"
     },
     {
       "src": "^/app/?$",
-      "dest": "/app-phase3.html"
+      "dest": "/app-phase4.html"
     },
     {
       "src": "^/app\\.html$",
-      "dest": "/app-phase3.html"
+      "dest": "/app-phase4.html"
     },
     {
       "src": "^/fase4/?$",
